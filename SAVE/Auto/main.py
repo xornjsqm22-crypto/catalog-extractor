@@ -5,12 +5,19 @@ import fitz  # pymupdf
 import os
 from pathlib import Path
 
+def clean_number(value):
+    if not value:
+        return ''
+    import re
+    match = re.search(r'[\d.]+', str(value))
+    return float(match.group()) if match else value
+
 SAVE_PATH = '창호DB.xlsx'
 
 HEADERS = [
     '기호', '회사', '창호명', '종류', '개폐방식',
-    '프레임폭(mm)', '프레임두께(mm)', '벤트폭(mm)', '벤트두께(mm)',
-    '유리종류', '유리두께(T)', '기밀등급', '차음성능(dB)', '방범성능', '방화여부', '비고'
+    '프레임폭', '프레임두께', '벤트폭', '벤트두께',
+    '유리종류', '유리두께', '기밀등급', '차음성능', '방범성능', '방화여부', '비고'
 ]
 
 PREFIX_MAP = {
@@ -108,14 +115,14 @@ def save_to_excel(spec_text, save_path=SAVE_PATH):
         data.get('창호명', ''),
         종류,
         data.get('개폐방식', ''),
-        data.get('프레임폭(mm)', ''),
-        data.get('프레임두께(mm)', ''),
-        data.get('벤트폭(mm)', ''),
-        data.get('벤트두께(mm)', ''),
+        clean_number(data.get('프레임폭(mm)', '')),
+        clean_number(data.get('프레임두께(mm)', '')),
+        clean_number(data.get('벤트폭(mm)', '')),
+        clean_number(data.get('벤트두께(mm)', '')),
         data.get('유리종류', ''),
-        data.get('유리두께(T)', ''),
+        clean_number(data.get('유리두께(T)', '')),
         data.get('기밀등급', ''),
-        data.get('차음성능(dB)', ''),
+        clean_number(data.get('차음성능(dB)', '')),
         data.get('방범성능', ''),
         data.get('방화여부', ''),
         data.get('비고', '')
